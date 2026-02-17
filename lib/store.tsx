@@ -3,6 +3,14 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from "react"
 
 // ---- Types ----
+export interface User {
+  id: string
+  name: string
+  email: string
+  role: string
+  initials: string
+}
+
 export interface Job {
   id: string
   title: string
@@ -121,10 +129,13 @@ const initialActivities: ActivityEvent[] = [
 
 // ---- Context ----
 interface AppStore {
+  user: User | null
   jobs: Job[]
   candidates: CandidateFile[]
   activities: ActivityEvent[]
   selectedJobId: string | null
+  setUser: (user: User | null) => void
+  logout: () => void
   setSelectedJob: (jobId: string | null) => void
   getCandidatesForJob: (jobId: string) => CandidateFile[]
   addJob: (job: Omit<Job, "id" | "postedAt" | "candidates" | "status">) => void
@@ -141,10 +152,19 @@ export function useAppStore() {
 }
 
 export function AppStoreProvider({ children }: { children: ReactNode }) {
+  const [user, setUserState] = useState<User | null>(null)
   const [jobs, setJobs] = useState<Job[]>(initialJobs)
   const [candidates, setCandidates] = useState<CandidateFile[]>(initialCandidates)
   const [activities, setActivities] = useState<ActivityEvent[]>(initialActivities)
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null)
+
+  const setUser = useCallback((userData: User | null) => {
+    setUserState(userData)
+  }, [])
+
+  const logout = useCallback(() => {
+    setUserState(null)
+  }, [])
 
   const addActivity = useCallback((event: Omit<ActivityEvent, "id" | "timestamp">) => {
     setActivities((prev) => [
@@ -267,7 +287,7 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
 
 
   return (
-    <AppStoreContext.Provider value={{ jobs, candidates, activities, selectedJobId, setSelectedJob, getCandidatesForJob, addJob, addCandidates, addActivity }}>
+    <AppStoreContext.Provider value={{ user, setUser, logout, jobs, candidates, activities, selectedJobId, setSelectedJob, getCandidatesForJob, addJob, addCandidates, addActivity }}>
       {children}
     </AppStoreContext.Provider>
   )

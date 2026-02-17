@@ -7,14 +7,42 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Brain, ArrowRight } from "lucide-react"
+import { useAppStore } from "@/lib/store"
 
 export default function LoginPage() {
   const router = useRouter()
+  const { setUser } = useAppStore()
   const [isLoading, setIsLoading] = useState(false)
+  const [email, setEmail] = useState("")
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setIsLoading(true)
+
+    // Extract name from email (e.g., "john.doe@company.com" -> "John Doe")
+    const emailName = email.split('@')[0]
+    const nameParts = emailName.split(/[._-]/)
+    const fullName = nameParts
+      .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(' ')
+
+    // Get initials (e.g., "John Doe" -> "JD")
+    const initials = fullName
+      .split(' ')
+      .map(word => word.charAt(0))
+      .join('')
+      .toUpperCase()
+      .slice(0, 2)
+
+    // Set user in store
+    setUser({
+      id: `user-${Date.now()}`,
+      name: fullName,
+      email: email,
+      role: "Recruiter",
+      initials: initials
+    })
+
     setTimeout(() => {
       router.push("/dashboard")
     }, 800)
@@ -88,6 +116,8 @@ export default function LoginPage() {
                 type="email"
                 placeholder="you@company.com"
                 className="border-border/50 bg-secondary/50 text-foreground placeholder:text-muted-foreground/50"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>

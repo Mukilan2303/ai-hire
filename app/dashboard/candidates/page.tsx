@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, useCallback } from "react"
+import Link from "next/link"
 import { DashboardTopbar } from "@/components/dashboard/topbar"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -432,7 +433,7 @@ export default function CandidatesPage() {
                   Analysis complete • {doneCount} candidates ranked
                 </p>
                 <Button variant="outline" size="sm" asChild>
-                  <a href="/dashboard">View on Dashboard →</a>
+                  <Link href="/dashboard">View on Dashboard →</Link>
                 </Button>
               </div>
             </div>

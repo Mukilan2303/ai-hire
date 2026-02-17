@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Star, ChevronRight } from "lucide-react"
@@ -50,9 +51,9 @@ export function CandidateTable() {
         {rankedCandidates.length === 0 ? (
           <div className="px-6 py-12 text-center">
             <p className="text-sm text-muted-foreground mb-3">No candidates uploaded yet.</p>
-            <a href="/dashboard/candidates" className="text-sm text-primary hover:underline">
+            <Link href="/dashboard/candidates" className="text-sm text-primary hover:underline">
               Upload resumes to get started →
-            </a>
+            </Link>
           </div>
         ) : (
           <div className="overflow-x-auto">
